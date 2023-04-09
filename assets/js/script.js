@@ -5,21 +5,22 @@ const question = {
 }
 
 const quiz = document.getElementById("quiz");
+const form = document.getElementById("form");
 const titleText = document.getElementById("title")
 const startButton = document.getElementById("start");
-const scoreButton = document.getElementById("high-score");
+const answerText = document.getElementById("answer");
 const timerDisplay = document.getElementById("timer");
-const form = document.getElementById("form");
-const answerText = document.getElementById("answer")
+const scoreButton = document.getElementById("high-score");
 
 let timer;
-let questionNum;
-let askedQuestions = [];
-let currentQuestion;
 let score;
+let questionNum;
+let timeInterval;
+let currentQuestion;
 let highScores = [];
 let isGameOver = true;
-let timeInterval;
+let askedQuestions = [];
+
 
 init();
 
@@ -28,9 +29,6 @@ form.addEventListener("submit", function(event){
     if(isGameOver){
         let scoreInputValue = form.querySelector("#score-input");
         let scoreText = scoreInputValue.value + " - " + score;
-        if(scoreText === ""){
-            return;
-        }
         highScores.push(scoreText);
         scoreInputValue.value = "";
     }
