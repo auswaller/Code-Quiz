@@ -10,28 +10,55 @@ const startButton = document.getElementById("start");
 const scoreButton = document.getElementById("high-score");
 const timerDisplay = document.getElementById("timer");
 const form = document.getElementById("form");
+const answerText = document.getElementById("answer")
 
 let timer;
 let questionNum;
 let askedQuestions = [];
 let currentQuestion;
-var score;
+let score;
 let highScores = [];
+let isGameOver = true;
+let timeInterval;
 
 init();
 
+form.addEventListener("submit", function(event){
+    event.preventDefault();
+    if(isGameOver){
+        let scoreInputValue = form.querySelector("#score-input");
+        let scoreText = scoreInputValue.value + " - " + score;
+        if(scoreText === ""){
+            return;
+        }
+        highScores.push(scoreText);
+        scoreInputValue.value = "";
+    }
+
+    storeInfo();
+    showHighScores();
+});
+
 quiz.addEventListener("click", function(event){
+    event.preventDefault();
     let target = event.target;
 
     if(target.matches("button") === true){
-        if(target.getAttribute("data-value") == question.answer[currentQuestion]){
+        if(target.getAttribute("data-value") == "clear-scores"){
+            highScores = [];
+            storeInfo();
+            showHighScores();
+        }
+        else if(target.getAttribute("data-value") == question.answer[currentQuestion]){
             score += 10;
             console.log("correct! " + target.getAttribute("data-value") + " = " + question.answer[currentQuestion] + " current score " + score);
+            answerText.innerHTML = "Correct!";
             nextQuestion();
         }
         else{
             timer -= 10;
             console.log("incorrect! " + target.getAttribute("data-value") + " != " + question.answer[currentQuestion] + " current score " + score);
+            answerText.innerHTML = "Incorrect!";
             nextQuestion();
         }
     }
@@ -39,14 +66,17 @@ quiz.addEventListener("click", function(event){
 
 scoreButton.addEventListener("click", function(event){
     event.preventDefault();
+    isGameOver = true;
     showHighScores();
 });
 
 startButton.addEventListener("click", function(event) {
     event.preventDefault();
+    isGameOver = false;
     timer = 60;
     questionNum = 0;
     score = 0;
+    askedQuestions = [];
     startButton.style.display = "none";
 	timeInterval = setInterval(function() {
         timerDisplay.innerHTML = timer;
@@ -102,6 +132,8 @@ function checkIfAsked(number){
 
 function quizOver(){
     clearInterval(timeInterval);
+    isGameOver = true;
+    answerText.innerHTML = "";
     timerDisplay.innerHTML = 0;
     removeChildren(quiz);
     score += timer;
@@ -111,6 +143,7 @@ function quizOver(){
     var input = document.createElement("input");
     label.setAttribute("for", "form");
     label.innerHTML = "Enter your name: ";
+    input.setAttribute("id", "score-input")
     input.setAttribute("type", "text")
     input.setAttribute("placeholder", "Name");
 
@@ -119,17 +152,25 @@ function quizOver(){
 }
 
 function showHighScores(){
-    clearInterval(timeInterval);
+    if(timeInterval !== null){
+        clearInterval(timeInterval);
+    }
+    answerText.innerHTML = "";
     timerDisplay.innerHTML = 0;
     titleText.innerHTML = "High Scores"
     startButton.style.display = "block";
     removeChildren(quiz);
+    removeChildren(form);
 
     for(i = 0; i < highScores.length; i++){
         let li = document.createElement("li");
         li.textContent = (i + 1) + ". " + highScores[i];
         quiz.appendChild(li);
     }
+    let button = document.createElement("button");
+    button.textContent = "Clear Scores";
+    button.setAttribute("data-value", "clear-scores");
+    quiz.appendChild(button);
 }
 
 function storeInfo(){
