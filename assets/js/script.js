@@ -9,15 +9,33 @@ const titleText = document.getElementById("title")
 const startButton = document.getElementById("start");
 const scoreButton = document.getElementById("high-score");
 const timerDisplay = document.getElementById("timer");
+const form = document.getElementById("form");
 
 let timer;
 let questionNum;
 let askedQuestions = [];
 let currentQuestion;
-let score = 0;
+var score;
 let highScores = [];
 
 init();
+
+quiz.addEventListener("click", function(event){
+    let target = event.target;
+
+    if(target.matches("button") === true){
+        if(target.getAttribute("data-value") == question.answer[currentQuestion]){
+            score += 10;
+            console.log("correct! " + target.getAttribute("data-value") + " = " + question.answer[currentQuestion] + " current score " + score);
+            nextQuestion();
+        }
+        else{
+            timer -= 10;
+            console.log("incorrect! " + target.getAttribute("data-value") + " != " + question.answer[currentQuestion] + " current score " + score);
+            nextQuestion();
+        }
+    }
+});
 
 scoreButton.addEventListener("click", function(event){
     event.preventDefault();
@@ -28,23 +46,25 @@ startButton.addEventListener("click", function(event) {
     event.preventDefault();
     timer = 60;
     questionNum = 0;
+    score = 0;
     startButton.style.display = "none";
 	timeInterval = setInterval(function() {
         timerDisplay.innerHTML = timer;
 
-        if(timer < 0){
+        if(timer <= 0){
             quizOver();
         }
         timer--;
     }, 1000);
-    currentQuestion = nextQuestion();
-    console.log(currentQuestion);
+    nextQuestion();
 });
 
 function nextQuestion(){
+    removeChildren(quiz);
     if(questionNum < 5){
         let randomQuestion = Math.floor(Math.random() * question.text.length);
         if(!checkIfAsked(randomQuestion)){
+            currentQuestion = randomQuestion;
             askedQuestions.push(randomQuestion);
             let choicesArr = question.choices[randomQuestion].split(",");
             titleText.innerHTML = "#" + (questionNum + 1) + ": " + question.text[randomQuestion];
@@ -53,6 +73,7 @@ function nextQuestion(){
                 let li = document.createElement("li");
                 let button = document.createElement("button");
                 button.textContent = (i + 1) + ". " + choicesArr[i];
+                button.setAttribute("data-value", choicesArr[i]);
                 li.appendChild(button);
                 quiz.appendChild(li);
             }
@@ -69,12 +90,12 @@ function nextQuestion(){
 }
 
 function checkIfAsked(number){
-    console.log("got here " + number);
-
     if(askedQuestions.includes(number)){
+        console.log(number + " has been asked already!");
         return true;
     }
     else{
+        console.log(number + " has not been asked yet.")
         return false;
     }
 }
@@ -82,8 +103,19 @@ function checkIfAsked(number){
 function quizOver(){
     clearInterval(timeInterval);
     timerDisplay.innerHTML = 0;
-    removeChildren();
-    
+    removeChildren(quiz);
+    score += timer;
+    titleText.innerHTML = "Your score is: " + score;
+
+    var label = document.createElement("label");
+    var input = document.createElement("input");
+    label.setAttribute("for", "form");
+    label.innerHTML = "Enter your name: ";
+    input.setAttribute("type", "text")
+    input.setAttribute("placeholder", "Name");
+
+    form.appendChild(label);
+    form.appendChild(input);
 }
 
 function showHighScores(){
@@ -91,7 +123,7 @@ function showHighScores(){
     timerDisplay.innerHTML = 0;
     titleText.innerHTML = "High Scores"
     startButton.style.display = "block";
-    removeChildren();
+    removeChildren(quiz);
 
     for(i = 0; i < highScores.length; i++){
         let li = document.createElement("li");
@@ -112,8 +144,8 @@ function init(){
     }
 }
 
-function removeChildren(){
-    while(quiz.hasChildNodes()){
-        quiz.removeChild(quiz.firstChild);
+function removeChildren(parent){
+    while(parent.hasChildNodes()){
+        parent.removeChild(parent.firstChild);
     }
 }
