@@ -1,13 +1,19 @@
 :root{
-	--buttonColor: #88d9e6;
-	--buttonColorFade: #c5fffd;
-	--fontColor: #374b4a;
+	--buttonColor: #2a0c4e;
+	--buttonColorFade: #ab70be;
+	--fontColor: whitesmoke;
 }
 
 *{
     font-family: Arial, Helvetica, sans-serif;
-	background-color: #526760;
-	color: whitesmoke;
+	background-color: whitesmoke;
+	color: #374b4a;
+}
+
+h1{
+	justify-content: center;
+	align-items: center;
+	
 }
 
 header {
@@ -35,7 +41,20 @@ button:hover{
 
 input {
 	background-color: whitesmoke;
-	color: var(--fontColor);
+	color: #374b4a;
+	border-radius: 15px;
+	font-size: 1.25rem;
+}
+
+label{
+	font-weight: bold;
+	color: #374b4a;
+	font-size: 1.25;
+}
+
+li{
+	font-size: 1.5rem;
+	list-style-type: none;
 }
 
 #timer {

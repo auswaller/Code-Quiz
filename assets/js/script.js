@@ -143,7 +143,7 @@ function quizOver(){
     label.innerHTML = "Enter your name: ";
     input.setAttribute("id", "score-input")
     input.setAttribute("type", "text")
-    input.setAttribute("placeholder", "Name");
+    input.setAttribute("placeholder", " Name");
 
     form.appendChild(label);
     form.appendChild(input);
