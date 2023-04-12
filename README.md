@@ -10,4 +10,4 @@ This is a timed quiz that will start once pressing the start button and ask 5 ra
 
 ## Link
 
-https://auswaller.github.io/code-quiz
+https://auswaller.github.io/Code-Quiz/
