@@ -24,6 +24,7 @@ let askedQuestions = [];
 
 init();
 
+//wait for form to be filled out and append the final score to the name entered
 form.addEventListener("submit", function(event){
     event.preventDefault();
     if(isGameOver){
@@ -37,6 +38,7 @@ form.addEventListener("submit", function(event){
     showHighScores();
 });
 
+////wait for button clicks and test to see if it was to clear the high scores or an answer to a quiz question. If so verify if correct or incorrent and move onto the next
 quiz.addEventListener("click", function(event){
     event.preventDefault();
     let target = event.target;
@@ -62,12 +64,14 @@ quiz.addEventListener("click", function(event){
     }
 });
 
+//wait for a click on the high score button and call the function to display them
 scoreButton.addEventListener("click", function(event){
     event.preventDefault();
     isGameOver = true;
     showHighScores();
 });
 
+//wait for a click on the start button and reset score, timer, which questions that have been asked, and which question number the quiz is on. Then start the timer and ask a question
 startButton.addEventListener("click", function(event) {
     event.preventDefault();
     isGameOver = false;
@@ -87,6 +91,7 @@ startButton.addEventListener("click", function(event) {
     nextQuestion();
 });
 
+//logic for determining the next question and if 5 questions have been asked yet. Then choose a random one and display the multiple choices
 function nextQuestion(){
     removeChildren(quiz);
     if(questionNum < 5){
@@ -117,6 +122,7 @@ function nextQuestion(){
     }
 }
 
+//logic to determine if a question has been asked yet or not
 function checkIfAsked(number){
     if(askedQuestions.includes(number)){
         console.log(number + " has been asked already!");
@@ -128,6 +134,7 @@ function checkIfAsked(number){
     }
 }
 
+//logic for what to do after the quiz ends. Determines score and shows an input for entering your name for the score list
 function quizOver(){
     clearInterval(timeInterval);
     isGameOver = true;
@@ -149,6 +156,7 @@ function quizOver(){
     form.appendChild(input);
 }
 
+//logic for showing the high score list
 function showHighScores(){
     if(timeInterval !== null){
         clearInterval(timeInterval);
@@ -171,10 +179,12 @@ function showHighScores(){
     quiz.appendChild(button);
 }
 
+//stores scores to local storage
 function storeInfo(){
     localStorage.setItem("scores", JSON.stringify(highScores));
 }
 
+//logic for initial page load. looks for stored high scores and if there adds them to the current high score variable
 function init(){
     let storedScores = JSON.parse(localStorage.getItem("scores"));
 
@@ -183,6 +193,7 @@ function init(){
     }
 }
 
+//logic for dynamically removing child elements
 function removeChildren(parent){
     while(parent.hasChildNodes()){
         parent.removeChild(parent.firstChild);
